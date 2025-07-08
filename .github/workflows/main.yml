@@ -84,6 +84,7 @@ jobs:
             echo "ca passe"
             sed -i -E "s/cycle.*/cycle=$nb_cycle_execution/" coucou
           fi
+          exit 1
           git config --local user.email "test@github.com"
           git config --local user.name "GitHub Action test"
           git add ./coucou
@@ -111,4 +112,19 @@ jobs:
                -d "{\"body\": \"$COMMENT\"}" \
                "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
 
+      - name: Put a comment 
+        if: failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "ça passe "
+          PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+
+          COMMENT=" Pipeline has failed due to a decrease in performance."
+
+          curl -s -H "Authorization: token $GITHUB_TOKEN" \
+               -H "Content-Type: application/json" \
+               -X POST \
+               -d "{\"body\": \"$COMMENT\"}" \
+               "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
 
