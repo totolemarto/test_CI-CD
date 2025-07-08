@@ -83,12 +83,14 @@ jobs:
             echo "ca passe"
             sed -i -E "s/read.*/read=$nb_read_miss/" coucou
           fi
-          git remote set-url origin ${{ secrets.ssh }}
-          git add .
-          git commit -m "Auto updating perf"
-          git fetch origin master
-          git push origin HEAD:master
-          
+          git config --local user.email "test@github.com"
+          git config --local user.name "GitHub Action test"
+          git add ./coucou
+      - name: Push changes # push the output folder to your repo
+        uses: ad-m/github-push-action@master
+        with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        force: true
 
       - name: Put a comment 
         if: failure()
