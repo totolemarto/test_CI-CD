@@ -80,9 +80,14 @@ jobs:
           fi
           if (( $(echo "$nb_cycle_execution < $prev_cycle"  | bc -l) ))
           then
+            echo "ca passe"
             sed -i -E "s/read.*/read=$nb_read_miss/" coucou
           fi
-
+          git remote set-url origin ${{ secrets.ssh }}
+          git add .
+          git commit -m "Auto updating perf"
+          git fetch origin master
+          git push origin HEAD:master
           
 
       - name: Put a comment 
