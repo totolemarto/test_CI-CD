@@ -87,6 +87,7 @@ jobs:
           git config --local user.email "test@github.com"
           git config --local user.name "GitHub Action test"
           git add ./coucou
+          git commit -m "new best perf"
           cat coucou
       - name: Push changes # push the output folder to your repo
         uses: ad-m/github-push-action@master
