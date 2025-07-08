@@ -59,10 +59,6 @@ jobs:
           fi
 
       - name: Change best perf
-        on:
-          push:
-            branches:
-              - main
         run: |
           file_prev="coucou"
           prev_cycle=$(cat $file_prev | grep "cycle" | cut -d "=" -f 2)
