@@ -111,4 +111,12 @@ jobs:
                -d "{\"body\": \"$COMMENT\"}" \
                "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
 
+  coucou:
+    name: coucou 
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+        - name: ne_se_lance_pas
+          run: |
+            echo "hey"
 
