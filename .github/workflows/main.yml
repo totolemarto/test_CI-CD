@@ -100,6 +100,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MY_PAT_TOKEN }}
         run: |
+          echo $GITHUB_TOKEN
           if [ -z $GITHUB_TOKEN ] 
           then
             exit 0
