@@ -105,6 +105,7 @@ jobs:
             exit 0
           fi
           echo "ça passe "
+          echo "ça passe bis "
           PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
 
           COMMENT=" Pipeline has failed due to a decrease in performance."
