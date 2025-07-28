@@ -8,8 +8,6 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   pull_request_target:
     branches: [ "main" ]
 
@@ -102,6 +100,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MY_PAT_TOKEN }}
         run: |
+          if [ -z $GITHUB_TOKEN ] 
+          then
+            exit 0
+          fi
           echo "ça passe "
           PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
 
