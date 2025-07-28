@@ -102,6 +102,7 @@ jobs:
           PAT: ${{ secrets.REPO_DISPATCH_TOKEN }}
         run: |
           PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          echo "pat = $PAT"
           curl -X POST \
             -H "Authorization: token $PAT" \
             -H "Accept: application/vnd.github+json" \
