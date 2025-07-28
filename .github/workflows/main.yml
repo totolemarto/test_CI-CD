@@ -8,7 +8,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
-  pull_request_target:
+  pull_request:
     branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -92,16 +92,15 @@ jobs:
       - name: Push changes # push the output folder to your repo
         uses: ad-m/github-push-action@master
         with:
-          GITHUB_TOKEN: ${{ secrets.MY_PAT_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           force: true
 
       - name: Put a comment 
         if: failure()
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo $GITHUB_TOKEN
-          if [ -z $GITHUB_TOKEN ] 
+          if [ -v $GITHUB_TOKEN ]
           then
             exit 0
           fi
