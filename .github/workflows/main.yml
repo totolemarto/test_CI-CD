@@ -6,7 +6,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
-  pull_request_target:
+  pull_request:
     branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -35,6 +35,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
+        id: catch-perf
         run: |
           file_prev="coucou"
           prev_cycle=$(cat $file_prev | grep "cycle" | cut -d "=" -f 2)
@@ -49,16 +50,19 @@ jobs:
           if (( $(echo "$nb_read_miss > $prev_read"  | bc -l) ))
           then
             echo -e  "\033[31mThe percentage of miss on read has grow\033[0m"
+            echo "exitcode=1" >> $GITHUB_OUTPUT
             exit 1
           fi
           if (( $(echo "$nb_write_miss > $prev_write"  | bc -l) ))
           then
             echo -e  "\033[31mThe percentage of miss on write has grow\033[0m"
+            echo "exitcode=2" >> $GITHUB_OUTPUT
             exit 2
           fi
           if (( $(echo "$nb_cycle_execution > $prev_cycle"  | bc -l) ))
           then
             echo -e  "\033[31mThe number of cycle has grow\033[0m"
+            echo "exitcode=3" >> $GITHUB_OUTPUT
             exit 3
           fi
 
@@ -98,9 +102,13 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           force: true
       - name: Trigger comment workflow via dispatch
-        if: failure()
+        if: failure() && steps.catch-perf.outputs.exitcode != '0'
         uses: thollander/actions-comment-pull-request@v3
         with:
           message: |
-            Hello world ! :wave:
+            ${{
+              steps.catch-perf.outputs.exitcode == '1' && 'Pipeline has failed due to a decrease in performance in read' ||
+              steps.catch-perf.outputs.exitcode == '2' && 'Pipeline has failed due to a decrease in performance in write' ||
+              steps.catch-perf.outputs.exitcode == '3' && 'Pipeline has failed due to a decrease in performance number of cycle increase' ||
+            }}
 
