@@ -1,0 +1,20 @@
+name: infra
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  run-project-1-build:
+    name: Project 1
+    uses: ./.github/workflows/begin.yml
+    with:
+      job: build
+    secrets: inherit
+
+  run-project-2-build:
+    name: Project 2
+    uses: ./.github/workflows/comment.yml
+    with:
+      job: comment-perf 
+    secrets: inherit
