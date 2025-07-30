@@ -1,10 +1,8 @@
 name: Comment on Performance
 
 on:
-  workflow_run:
-    workflows: ["MAIN"]
-    types:
-      - completed
+  pull-request_target:
+    branches: [ "main" ]
 
 jobs:
   comment-perf:
