@@ -9,11 +9,14 @@ on:
       output:
         required: true
         type: string
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+permissions:
+  pull-requests: write
+
 jobs:
   comment-perf:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
 
     steps:
       - name: Download artifact
