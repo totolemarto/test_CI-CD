@@ -41,8 +41,8 @@ jobs:
           prev_cycle=$(cat $file_prev | grep "cycle" | cut -d "=" -f 2)
           prev_read=$(cat $file_prev | grep "read" | cut -d "=" -f 2)
           prev_write=$(cat $file_prev| grep "write" | cut -d "=" -f 2)
-          nb_read_miss=0.3
-          nb_write_miss=0.1
+          nb_read_miss=0.2
+          nb_write_miss=0.2
           nb_cycle_execution=3
 
           echo "read = $nb_read_miss write = $nb_write_miss  cycles = $nb_cycle_execution"
