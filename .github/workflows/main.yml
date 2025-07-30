@@ -6,7 +6,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
-  pull_request_target:
+  pull_request:
     branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -96,6 +96,17 @@ jobs:
           then
             echo "message=$x" >> $GITHUB_OUTPUT
           fi
+      - name: heyhyhih
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!'
+            })
 
       - name: Trigger comment workflow better 
         uses: thollander/actions-comment-pull-request@v3
