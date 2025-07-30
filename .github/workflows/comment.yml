@@ -1,8 +1,11 @@
 name: Comment on Performance
 
 on:
-  pull-request_target:
-    branches: [ "main" ]
+  workflow_call:
+    inputs:
+      job:
+        required: true
+        type: string
 
 jobs:
   comment-perf:
