@@ -70,13 +70,13 @@ jobs:
             if (prs.length === 0) {
               throw new Error(`No PR found for commit ${commitSha}`);
             }
-            core.setOutput('pr_number', prs[0].number);
+            core.setOutput('pr-number', prs[0].number);
 
       - name: Comment on PR
         if: ${{ github.event.workflow_run.conclusion == 'success' && steps.check_file.outcome != 'failure' }}
         uses: thollander/actions-comment-pull-request@v3
         with:
-          pr_number: ${{ steps.find-pr.outputs.pr_number }}
+          pr-number: ${{ steps.find-pr.outputs.pr-number }}
           message: |
             result :
             -  Read Miss : `${{ steps.perf.outputs.read }}`
@@ -87,7 +87,7 @@ jobs:
         if: ${{ github.event.workflow_run.conclusion != 'success' }}
         uses: thollander/actions-comment-pull-request@v3
         with:
-          pr_number: ${{ steps.find-pr.outputs.pr_number }}
+          pr-number: ${{ steps.find-pr.outputs.pr-number }}
           message: >
             ${{
               steps.has_failed.outputs.exitcode == '1' && 'Pipeline has failed due to a decrease in performance in read' ||
