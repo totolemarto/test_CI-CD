@@ -19,4 +19,8 @@ jobs:
     with:
       job: comment-perf 
       output: ${{ needs.run-project-1-build.outputs.perf_result }}
+      pr_number: ${{ github.event.number }}
+    permissions:
+      pull-requests: write
+      contents: read
     secrets: inherit
