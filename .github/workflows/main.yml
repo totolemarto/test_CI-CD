@@ -92,7 +92,7 @@ jobs:
           then
             x+=" cycle=$nb_cycle_execution"
           fi
-          if [[ x -ne "" ]]
+          if [[ $x == "" ]]
           then
             echo "message=$x" >> $GITHUB_OUTPUT
           fi
