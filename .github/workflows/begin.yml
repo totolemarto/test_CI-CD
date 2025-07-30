@@ -101,7 +101,6 @@ jobs:
 
 
       - name: create artifact
-        if: steps.new_best_perf.outputs.message != ''
         uses: actions/upload-artifact@v4
         with:
           name: perf-results
