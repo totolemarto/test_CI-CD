@@ -42,7 +42,7 @@ jobs:
           prev_read=$(cat $file_prev | grep "read" | cut -d "=" -f 2)
           prev_write=$(cat $file_prev| grep "write" | cut -d "=" -f 2)
           nb_read_miss=0.2
-          nb_write_miss=0.2
+          nb_write_miss=0.1
           nb_cycle_execution=3
 
           echo "read = $nb_read_miss write = $nb_write_miss  cycles = $nb_cycle_execution"
@@ -67,42 +67,46 @@ jobs:
           fi
 
       - name: Change best perf
+        id: new_best_perf
         run: |
           file_prev="coucou"
           prev_cycle=$(cat $file_prev | grep "cycle" | cut -d "=" -f 2)
           prev_read=$(cat $file_prev | grep "read" | cut -d "=" -f 2)
           prev_write=$(cat $file_prev| grep "write" | cut -d "=" -f 2)
-          nb_read_miss=0.2
-          nb_write_miss=0.1
-          nb_cycle_execution=3
+          nb_read_miss=0.3
+          nb_write_miss=0.2
+          nb_cycle_execution=4
 
           echo "read = $nb_read_miss write = $nb_write_miss  cycles = $nb_cycle_execution"
           echo "read_prev = $prev_read write_prev = $prev_write cycle = $prev_cycle"
+          x=""
           if (( $(echo "$nb_read_miss < $prev_read"  | bc -l) ))
           then
-            sed -i -E "s/read.*/read=$nb_read_miss/" coucou
+            x+=" read=$nb_read_miss"
           fi
           if (( $(echo "$nb_write_miss < $prev_write"  | bc -l) ))
           then
-            sed -i -E "s/write.*/write=$nb_write_miss/" coucou
+            x+=" write=$nb_write_miss"
           fi
           if (( $(echo "$nb_cycle_execution < $prev_cycle"  | bc -l) ))
           then
-            echo "ca passe"
-            sed -i -E "s/cycle.*/cycle=$nb_cycle_execution/" coucou
+            x+=" cycle=$nb_cycle_execution"
           fi
-          git config --local user.email "test@github.com"
-          git config --local user.name "GitHub Action test"
-          git add ./coucou
-          git commit -m "new best perf"
-          cat coucou
-      - name: Push changes # push the output folder to your repo
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          force: true
+          if [[ x -ne "" ]]
+          then
+            echo "message=$x" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Trigger comment workflow via dispatch
+      - name: Trigger comment workflow better 
+        uses: thollander/actions-comment-pull-request@v3
+        if: steps.new_best_perf.outputs.message != ''
+        with:
+          message: >
+            ${{
+              steps.new_best_perf.outputs.message 
+            }}
+
+      - name: Trigger comment workflow bad 
         if: failure() && steps.catch-perf.outputs.exitcode != '0'
         uses: thollander/actions-comment-pull-request@v3
         with:
