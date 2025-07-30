@@ -19,10 +19,7 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
-      repository-projects: write
-      issues: write
+      contents: read  
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -50,19 +47,19 @@ jobs:
           if (( $(echo "$nb_read_miss > $prev_read"  | bc -l) ))
           then
             echo -e  "\033[31mThe percentage of miss on read has grow\033[0m"
-            echo "exitcode=1" >> $GITHUB_OUTPUT
+            echo "exitcode=1" > exitcode.txt 
             exit 1
           fi
           if (( $(echo "$nb_write_miss > $prev_write"  | bc -l) ))
           then
             echo -e  "\033[31mThe percentage of miss on write has grow\033[0m"
-            echo "exitcode=2" >> $GITHUB_OUTPUT
+            echo "exitcode=2" > exitcode.txt 
             exit 2
           fi
           if (( $(echo "$nb_cycle_execution > $prev_cycle"  | bc -l) ))
           then
             echo -e  "\033[31mThe number of cycle has grow\033[0m"
-            echo "exitcode=3" >> $GITHUB_OUTPUT
+            echo "exitcode=3" > exitcode.txt 
             exit 3
           fi
 
@@ -95,37 +92,21 @@ jobs:
           if [[ $x != "" ]]
           then
             echo "message=$x" >> $GITHUB_OUTPUT
+            echo "$x" > result.txt 
           fi
-      - name: heyhyhih
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
-            })
 
-      - name: Trigger comment workflow better 
-        uses: thollander/actions-comment-pull-request@v3
+
+      - name: create artifact
         if: steps.new_best_perf.outputs.message != ''
+        uses: actions/upload-artifact@v4
         with:
-          message: >
-            ${{
-              steps.new_best_perf.outputs.message 
-            }}
+          name: perf-results
+          path: result.txt 
+                  
 
       - name: Trigger comment workflow bad 
-        if: failure() && steps.catch-perf.outputs.exitcode != '0'
-        uses: thollander/actions-comment-pull-request@v3
+        if: failure() 
+        uses: actions/upload-artifact@v4
         with:
-          message: >
-            ${{
-              steps.catch-perf.outputs.exitcode == '1' && 'Pipeline has failed due to a decrease in performance in read' ||
-              steps.catch-perf.outputs.exitcode == '2' && 'Pipeline has failed due to a decrease in performance in write' ||
-              steps.catch-perf.outputs.exitcode == '3' && 'Pipeline has failed due to an increase for number of cycle' ||
-             'Unknow error code'
-            }}
-
+          name: perf-results
+          path: exitcode.txt 
