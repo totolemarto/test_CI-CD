@@ -2,7 +2,7 @@ name: Comment on Performance
 
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: ["MAIN"]
     types:
       - completed
 
