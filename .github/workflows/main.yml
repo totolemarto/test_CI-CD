@@ -17,4 +17,5 @@ jobs:
     uses: ./.github/workflows/comment.yml
     with:
       job: comment-perf 
+      output: ${{ needs.run-project-1-build.outputs.perf_result }}
     secrets: inherit
