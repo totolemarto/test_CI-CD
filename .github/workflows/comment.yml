@@ -94,4 +94,3 @@ jobs:
               steps.has_failed.outputs.exitcode == '3' && 'Pipeline has failed due to an increase for number of cycle' ||
              'Unknow error code'
             }}
-
