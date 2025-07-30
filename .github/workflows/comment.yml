@@ -96,8 +96,8 @@ jobs:
             const prNumber = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: context.payload.workflow_run.head_branch
-            }).then(res => res.data.find(pr => pr.head.ref === context.payload.workflow_run.head_branch)?.number);
+              head: context.payload.workflow_run.head-branch
+            }).then(res => res.data.find(pr => pr.head.ref === context.payload.workflow_run.head-branch)?.number);
 
             if (prNumber) {
               await github.rest.issues.createComment({
@@ -107,7 +107,7 @@ jobs:
                 body: "✅ Tests passed avec succès ! 🎉"
               });
             } else {
-              core.warning("PR non trouvée pour la branche: " + context.payload.workflow_run.head_branch);
+              core.warning("PR non trouvée pour la branche: " + context.payload.workflow_run.head-branch);
             }     
 
 
