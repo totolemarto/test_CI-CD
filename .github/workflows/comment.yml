@@ -17,14 +17,14 @@ jobs:
 
     steps:
       - name: Download artifact
-        if: ${{ inputs.output == "0" }}
+        if: ${{ inputs.output == '0' }}
         uses: dawidd6/action-download-artifact@v3
         with:
           name: perf-results
           path: ./perf-data
 
       - name: has_failed
-        if: ${{ inputs.output != "0" }}
+        if: ${{ inputs.output != '0' }}
         id: has_failed
         run: |
          if [ -f ./perf-data/exitcode.txt ]; then
@@ -36,7 +36,7 @@ jobs:
 
       - name: Download artifact from CI
         id: check_file
-        if: ${{ inputs.output == "0" }}
+        if: ${{ inputs.output == '0' }}
         uses: dawidd6/action-download-artifact@v3
         with:
           name: perf-results
@@ -45,7 +45,7 @@ jobs:
         continue-on-error: true
 
       - name: Read performance result
-        if: ${{ inputs.output == "0" && steps.check_file.outcome != 'failure' }}
+        if: ${{ inputs.output == '0' && steps.check_file.outcome != 'failure' }}
         id: perf
         run: |
           if [ 
@@ -58,7 +58,7 @@ jobs:
 
       - name: Find related pull request
         id: find-pr
-        if: ${{ inputs.output == "0" && steps.check_file.outcome != 'failure' }}
+        if: ${{ inputs.output == '0' && steps.check_file.outcome != 'failure' }}
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -75,7 +75,7 @@ jobs:
             core.setOutput('pr-number', prs[0].number);
 
       - name: Comment on PR
-        if: ${{ inputs.output == "0" && steps.check_file.outcome != 'failure' }}
+        if: ${{ inputs.output == '0' && steps.check_file.outcome != 'failure' }}
         uses: thollander/actions-comment-pull-request@v3
         with:
           pr-number: ${{ steps.find-pr.outputs.pr-number }}
@@ -86,7 +86,7 @@ jobs:
             -  Cycles : `${{ steps.perf.outputs.cycle }}`
       
       - name: Trigger comment workflow bad 
-        if: ${{ inputs.output != "0" }}
+        if: ${{ inputs.output != '0' }}
         uses: thollander/actions-comment-pull-request@v3
         with:
           pr-number: ${{ steps.find-pr.outputs.pr-number }}
