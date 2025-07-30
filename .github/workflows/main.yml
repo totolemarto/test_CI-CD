@@ -101,14 +101,16 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           force: true
+
       - name: Trigger comment workflow via dispatch
         if: failure() && steps.catch-perf.outputs.exitcode != '0'
         uses: thollander/actions-comment-pull-request@v3
         with:
-          message: |
+          message: >
             ${{
               steps.catch-perf.outputs.exitcode == '1' && 'Pipeline has failed due to a decrease in performance in read' ||
               steps.catch-perf.outputs.exitcode == '2' && 'Pipeline has failed due to a decrease in performance in write' ||
-              steps.catch-perf.outputs.exitcode == '3' && 'Pipeline has failed due to a decrease in performance number of cycle increase' ||
+              steps.catch-perf.outputs.exitcode == '3' && 'Pipeline has failed due to an increase for number of cycle' ||
+             'Unknow error code'
             }}
 
